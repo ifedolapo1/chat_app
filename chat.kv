@@ -1,0 +1,79 @@
+#:kivy 2.0.0
+
+<LoginScreen>:
+    name: 'login'
+    username: username
+    password: password
+
+    FloatLayout:
+        cols: 1
+
+        BoxLayout:
+            orientation: 'vertical'
+            size: root.width, root.height / 2
+
+            Label:
+                text: 'Login Account'
+                font_size: 40
+            Label:
+                text: 'Enter Username'
+                font_size: 14
+            TextInput:
+                id: username
+                font_size: 14
+            Label:
+                text: 'Enter Password'
+                font_size: 14
+            TextInput:
+                id: password
+                font_size: 14
+                password: True
+                multiline: False
+            Button:
+                text: 'Login'
+                on_press: root.submit()
+            Label:
+                text: 'No account? Register'
+                font_size: 10
+            Button:
+                text: 'Create Account'
+                on_press: root.manager.current = 'register'
+
+<RegisterScreen>:
+    cols: 2
+    BoxLayout:
+        orientation:'vertical'
+        Label:
+            text:'Username'
+            font_size: 14
+        TextInput:
+            id:'username'
+            text:''
+        Label:
+            text:'Password'
+            font_size: 14
+        TextInput:
+            id:'password'
+            text:''
+        Button:
+            text:'Register'
+            on_press: root.manager.current = 'login'
+
+<ChatScreen>:
+    name: 'chat'
+    FloatLayout:
+        cols: 2
+
+        BoxLayout:
+            orientation: 'vertical'
+
+            Label:
+                text: 'Chat Lists'
+                font_size: 14
+
+        BoxLayout:
+            orientation: 'vertical'
+
+            Label:
+                text: 'Chat Messages'
+                font_size: 14
