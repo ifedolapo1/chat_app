@@ -1,24 +1,25 @@
 #:kivy 2.0.0
+# Kivy version used for the Graphics User Interface
 
 <LoginScreen>:
     name: 'login'
     username: username
     password: password
 
-    FloatLayout:
-        cols: 1
+    FloatLayout: # Float Layout Kivy Widget
+        cols: 1 # Column
 
-        BoxLayout:
-            orientation: 'vertical'
+        BoxLayout: # Box Layout Kivy Widget
+            orientation: 'vertical' # Orientation vertical
             size: root.width, root.height / 2
 
-            Label:
+            Label: # Text Kivy Widget
                 text: 'Login Account'
                 font_size: 40
             Label:
                 text: 'Enter Username'
                 font_size: 14
-            TextInput:
+            TextInput: # Text Input Kivy Widget
                 id: username
                 font_size: 14
             Label:
@@ -27,53 +28,95 @@
             TextInput:
                 id: password
                 font_size: 14
-                password: True
-                multiline: False
-            Button:
+                password: True # Text input is hidden by default
+                multiline: False # Disable multilines for password input
+            Button: # Button Kivy Widget
                 text: 'Login'
-                on_press: root.submit()
+                on_press: root.login() # On Press allow event firing
             Label:
-                text: 'No account? Register'
+                text: 'You do not have an account? Register'
                 font_size: 10
             Button:
                 text: 'Create Account'
                 on_press: root.manager.current = 'register'
 
 <RegisterScreen>:
+    name: 'register_page'
+    username: username
+    password: password
     cols: 2
     BoxLayout:
-        orientation:'vertical'
+        orientation: 'vertical'
+
+        Label: # Text Kivy Widget
+            text: 'Create an Account'
+            font_size: 40
         Label:
-            text:'Username'
+            text: 'Username'
             font_size: 14
         TextInput:
-            id:'username'
-            text:''
+            id: username
+            text: ''
         Label:
-            text:'Password'
+            text: 'Password'
             font_size: 14
         TextInput:
-            id:'password'
-            text:''
+            id: password
+            text: ''
+            password: True
+            multiline: False
         Button:
-            text:'Register'
-            on_press: root.manager.current = 'login'
+            text: 'Register'
+            on_release: root.register()
+
+<ListScreen>:
+    name: 'lists'
+    # lists: lists
+    boxlayout: boxlayout
+    
+    BoxLayout:
+        ScrollView: # ScrollView Kivy Widget
+            do_scroll_x: False # Disable Horizontal scroll
+            do_scroll_y: True # Enable Vertical scroll
+
+            BoxLayout:
+                id: boxlayout
+                # Label:
+                #     id: lists
+                #     size_hint_y: None
+                #     height: self.texture_size[1]
+                #     text_size: self.width, None
+                #     padding: 10, 10
+                #     on_touch_down: root.open_chat()
+                #     text: 'hi\n' * 100
 
 <ChatScreen>:
     name: 'chat'
-    FloatLayout:
-        cols: 2
+    input: input
+    lists: lists
 
-        BoxLayout:
-            orientation: 'vertical'
-
-            Label:
-                text: 'Chat Lists'
-                font_size: 14
-
-        BoxLayout:
-            orientation: 'vertical'
+    GridLayout: # Grid layout Kivy Widget
+        rows: 2 # Rows
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
 
             Label:
-                text: 'Chat Messages'
-                font_size: 14
+                id: lists
+                size_hint_y: None
+                height: self.texture_size[1]
+                text_size: self.width, None
+                padding: 10, 10
+                text: ''
+
+        GridLayout:
+            cols: 2
+
+            TextInput:
+                id: input
+                text: ''
+                multiline: False
+                # size_hint_x: None
+            Button:
+                text:'Send Message'
+                on_release: root.send_message()
