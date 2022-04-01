@@ -94,7 +94,7 @@
     name: 'chat'
     input: input
     lists: lists
-
+    
     GridLayout: # Grid layout Kivy Widget
         rows: 2 # Rows
         ScrollView:
@@ -110,8 +110,11 @@
                 text: ''
 
         GridLayout:
-            cols: 2
+            cols: 3
 
+            Button:
+                text:'Go to Chat List'
+                on_release: root.manager.current = 'lists'
             TextInput:
                 id: input
                 text: ''
