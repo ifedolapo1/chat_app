@@ -1,0 +1,36 @@
+#:kivy 2.0.0
+# Kivy version used for the Graphics User Interface
+
+<ChatScreen>:
+    name: 'chat'
+    input: input
+    lists: lists
+    
+    GridLayout: # Grid layout Kivy Widget
+        rows: 2 # Rows
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+
+            Label:
+                id: lists
+                size_hint_y: None
+                height: self.texture_size[1]
+                text_size: self.width, None
+                padding: 10, 10
+                text: ''
+
+        GridLayout:
+            cols: 3
+
+            Button:
+                text:'Go to Chat List'
+                on_release: root.manager.current = 'lists'
+            TextInput:
+                id: input
+                text: ''
+                multiline: False
+                # size_hint_x: None
+            Button:
+                text:'Send Message'
+                on_release: root.send_message()

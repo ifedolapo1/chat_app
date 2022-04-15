@@ -1,0 +1,16 @@
+#:kivy 2.0.0
+# Kivy version used for the Graphics User Interface
+
+<ListScreen>:
+    name: 'lists'
+    # lists: lists
+    boxlayout: boxlayout
+    
+    BoxLayout:
+        ScrollView: # ScrollView Kivy Widget
+            do_scroll_x: False # Disable Horizontal scroll
+            do_scroll_y: True # Enable Vertical scroll
+
+            BoxLayout:
+                orientation: 'vertical'
+                id: boxlayout

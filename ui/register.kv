@@ -1,0 +1,38 @@
+#:kivy 2.0.0
+# Kivy version used for the Graphics User Interface
+
+<RegisterScreen>:
+    name: 'register_page'
+    username: username
+    password: password
+    cols: 2
+    
+    BoxLayout:
+        orientation: 'vertical'
+
+        Label: # Text Kivy Widget
+            text: 'Create an Account'
+            font_size: 40
+        Label:
+            text: 'Username'
+            font_size: 14
+        TextInput:
+            id: username
+            text: ''
+        Label:
+            text: 'Password'
+            font_size: 14
+        TextInput:
+            id: password
+            text: ''
+            password: True
+            multiline: False
+        Button:
+            text: 'Register'
+            on_press: root.register()
+        Label:
+            text: 'You already have an account? Click below'
+            font_size: 10
+        Button:
+            text: 'Login Account'
+            on_press: root.manager.current = 'login'

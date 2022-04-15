@@ -1,0 +1,41 @@
+#:kivy 2.0.0
+# Kivy version used for the Graphics User Interface
+
+<LoginScreen>:
+    name: 'login'
+    username: username
+    password: password
+
+    FloatLayout: # Float Layout Kivy Widget
+        cols: 1 # Column
+
+        BoxLayout: # Box Layout Kivy Widget
+            orientation: 'vertical' # Orientation vertical
+            size: root.width, root.height / 2
+
+            Label: # Text Kivy Widget
+                text: 'Login Account'
+                font_size: 40
+            Label:
+                text: 'Enter Username'
+                font_size: 14
+            TextInput: # Text Input Kivy Widget
+                id: username
+                font_size: 14
+            Label:
+                text: 'Enter Password'
+                font_size: 14
+            TextInput:
+                id: password
+                font_size: 14
+                password: True # Text input is hidden by default
+                multiline: False # Disable multilines for password input
+            Button: # Button Kivy Widget
+                text: 'Login'
+                on_press: root.login() # On Press allow event firing
+            Label:
+                text: 'You do not have an account? Click below'
+                font_size: 10
+            Button:
+                text: 'Create Account'
+                on_press: root.manager.current = 'register'
