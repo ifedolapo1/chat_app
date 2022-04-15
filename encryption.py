@@ -4,59 +4,84 @@ import hashlib
 import secrets
 import binascii
 
+# Get Elliptic curve using brainpoolP256rl
+ec_curve = registry.get_curve('brainpoolP256r1')
 
-def encrypt_AES_GCM(msg, secretKey):
+userAPrivKey = secrets.randbelow(ec_curve.field.n)
+userAPubKey = userAPrivKey * ec_curve.g
+
+print('------------------------')
+print('UserAPubKey : ', userAPubKey)
+print('------------------------\n')
+
+userBPrivKey = secrets.randbelow(ec_curve.field.n)
+userBPubKey = userBPrivKey * ec_curve.g
+
+print('------------------------')
+print('UserAPubKey : ', userBPubKey)
+print('------------------------\n')
+
+
+def AES_GCM_encrypt(message, secretKey):
     aesCipher = AES.new(secretKey, AES.MODE_GCM)
-    ciphertext, authTag = aesCipher.encrypt_and_digest(msg)
+    ciphertext, authTag = aesCipher.encrypt_and_digest(message)
     return (ciphertext, aesCipher.nonce, authTag)
 
 
-def decrypt_AES_GCM(ciphertext, nonce, authTag, secretKey):
+def AES_GCM_decrypt(ciphertext, nonce, authTag, secretKey):
     aesCipher = AES.new(secretKey, AES.MODE_GCM, nonce)
     plaintext = aesCipher.decrypt_and_verify(ciphertext, authTag)
     return plaintext
 
 
-def ecc_point_to_256_bit_key(point):
+def ecc_point_to_256_bitkey(point):
     sha = hashlib.sha256(int.to_bytes(point.x, 32, 'big'))
-    sha.update(int.to_bytes(point.y, 32, 'big'))
+    sha.update(int.to_bytes(point.x, 32, 'big'))
     return sha.digest()
 
 
-curve = registry.get_curve('brainpoolP256r1')
-
-
-def encrypt_ECC(msg, pubKey):
-    ciphertextPrivKey = secrets.randbelow(curve.field.n)
-    sharedECCKey = ciphertextPrivKey * pubKey
-    secretKey = ecc_point_to_256_bit_key(sharedECCKey)
-    ciphertext, nonce, authTag = encrypt_AES_GCM(msg, secretKey)
-    ciphertextPubKey = ciphertextPrivKey * curve.g
+def ECC_encrypt(message, pubKey, privKey):
+    ECCSharedKey = privKey * pubKey
+    secretKey = ecc_point_to_256_bitkey(ECCSharedKey)
+    ciphertext, nonce, authTag = AES_GCM_encrypt(message, secretKey)
+    ciphertextPubKey = privKey * ec_curve.g
     return (ciphertext, nonce, authTag, ciphertextPubKey)
 
 
-def decrypt_ECC(encryptedMsg, privKey):
-    (ciphertext, nonce, authTag, ciphertextPubKey) = encryptedMsg
-    sharedECCKey = privKey * ciphertextPubKey
-    secretKey = ecc_point_to_256_bit_key(sharedECCKey)
-    plaintext = decrypt_AES_GCM(ciphertext, nonce, authTag, secretKey)
+def ECC_decrypt(encryptedMessage, privKey):
+    (ciphertext, nonce, authTag, ciphertextPubKey) = encryptedMessage
+    ECCSharedKey = privKey * ciphertextPubKey
+    secretKey = ecc_point_to_256_bitkey(ECCSharedKey)
+    plaintext = AES_GCM_decrypt(ciphertext, nonce, authTag, secretKey)
     return plaintext
 
 
-msg = b'Text to be encrypted by ECC public key and ' \
-      b'decrypted by its corresponding ECC private key'
-print("original msg:", msg)
-privKey = secrets.randbelow(curve.field.n)
-pubKey = privKey * curve.g
+message = b'hello, how are you doing?'
+userAEMessage = ECC_encrypt(message, userBPubKey, userAPrivKey)
 
-encryptedMsg = encrypt_ECC(msg, pubKey)
-encryptedMsgObj = {
-    'ciphertext': binascii.hexlify(encryptedMsg[0]),
-    'nonce': binascii.hexlify(encryptedMsg[1]),
-    'authTag': binascii.hexlify(encryptedMsg[2]),
-    'ciphertextPubKey': hex(encryptedMsg[3].x) + hex(encryptedMsg[3].y % 2)[2:]
-}
-print("encrypted msg:", encryptedMsgObj)
+print('------------------------')
+print('User A encrypted message : ', binascii.hexlify(userAEMessage[0]))
+print('------------------------\n')
 
-decryptedMsg = decrypt_ECC(encryptedMsg, privKey)
-print("decrypted msg:", decryptedMsg)
+userBDMessage = ECC_decrypt(userAEMessage, userBPrivKey)
+
+print('------------------------')
+print('User B decrypted message : ', userBDMessage)
+print('------------------------\n')
+
+message = b'I\'m good, what about you?'
+userBEMessage = ECC_encrypt(message, userAPubKey, userBPrivKey)
+
+print('------------------------')
+print('User B encrypted message : ', binascii.hexlify(userBEMessage[0]))
+print('------------------------\n')
+
+userADMessage = ECC_decrypt(userBEMessage, userAPrivKey)
+
+print('------------------------')
+print('User A decrypted message : ', userADMessage)
+print('------------------------\n')
+
+print('------------------------')
+print('Elliptic Curve Generator : ', ec_curve.g)
+print('------------------------\n')
