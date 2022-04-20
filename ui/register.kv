@@ -3,6 +3,7 @@
 
 <RegisterScreen>:
     name: 'register_page'
+    fullname: fullname
     username: username
     password: password
     cols: 2
@@ -13,6 +14,12 @@
         Label: # Text Kivy Widget
             text: 'Create an Account'
             font_size: 40
+        Label:
+            text: 'Full Name'
+            font_size: 14
+        TextInput:
+            id: fullname
+            text: ''
         Label:
             text: 'Username'
             font_size: 14

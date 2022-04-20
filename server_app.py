@@ -38,15 +38,46 @@ def login(sid, data):
         'id': str(user[0]),
         'username': str(user[1])
     }
-    with sio.session(sid) as session:
-        session['username'] = str(user[1])
-        session['id'] = str(user[0])
+    # with sio.session(sid) as session:
+    #     session['username'] = str(user[1])
+    #     session['id'] = str(user[0])
     return user_data
 
-@sio.on('chat', namespace='/chat')
+@sio.on('auth', namespace='/register')
+def register(sid, data):
+    fullname, username, password = itemgetter('fullname', 'username', 'password')(data)
+    secure_password = hashlib.md5(password.encode()).hexdigest()
+
+    print('Name: ', fullname, ' Username: ', username)
+    user_exists = cur.execute("SELECT username FROM users WHERE username = '%s'" % (username)).fetchone()
+    con.commit()
+    if user_exists is not None:
+        return {
+            'status': 'error',
+            'id': None
+        }
+    else:
+        user = cur.execute("INSERT INTO users(fullname, username, password) VALUES(?, ?, ?)", (fullname, username, secure_password))
+        con.commit()
+        print('user: ', user)
+        return {
+            'status': 'success'
+        }
+
+@sio.on('lists')
+def lists(sid, data):
+    pass
+
+
+@sio.on('chat')
 def chat(sid, data):
     print('chat', data)
-    pass
+    username, message = itemgetter('username', 'message')(data)
+    sio.emit('chat', {
+        'username': username, 
+        'message': message
+    }, namespace='/chat', skip_sid=sid)
+    return True
 
 @sio.event
 def on_disconnect(sid):

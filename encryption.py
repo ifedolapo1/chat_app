@@ -4,7 +4,7 @@ import hashlib
 import secrets
 import binascii
 
-# Get Elliptic curve using brainpoolP256rl
+# Get Elliptic curve using brainpoolP256r1
 ec_curve = registry.get_curve('brainpoolP256r1')
 
 userAPrivKey = secrets.randbelow(ec_curve.field.n)
