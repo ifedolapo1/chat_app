@@ -22,15 +22,22 @@
 
         GridLayout:
             cols: 3
+            size_hint_y: 0.12
 
             Button:
-                text:'Go to Chat List'
+                size_hint_x: 0.2
+                size_hint_y: 0.12
+                text:'Back'
                 on_release: root.manager.current = 'lists'
             TextInput:
                 id: input
                 text: ''
+                size_hint_x: 0.6
+                size_hint_y: 0.12
                 multiline: False
                 # size_hint_x: None
             Button:
-                text:'Send Message'
+                size_hint_x: 0.2
+                size_hint_y: 0.12
+                text:'Send'
                 on_release: root.send_message()

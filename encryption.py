@@ -1,3 +1,4 @@
+import base64
 from tinyec import registry
 from Crypto.Cipher import AES
 import hashlib
@@ -11,16 +12,35 @@ userAPrivKey = secrets.randbelow(ec_curve.field.n)
 userAPubKey = userAPrivKey * ec_curve.g
 
 print('------------------------')
+print('UserAPrivKey : ', userAPrivKey)
+print('------------------------\n')
+
+print('------------------------')
 print('UserAPubKey : ', userAPubKey)
+print('------------------------\n')
+
+print('------------------------')
+print('UserAPubKey : ', userAPrivKey * ec_curve.g)
 print('------------------------\n')
 
 userBPrivKey = secrets.randbelow(ec_curve.field.n)
 userBPubKey = userBPrivKey * ec_curve.g
 
 print('------------------------')
-print('UserAPubKey : ', userBPubKey)
+print('userBPrivKey : ', userBPrivKey)
 print('------------------------\n')
 
+print('------------------------')
+print('UserBPubKey : ', userBPubKey)
+print('------------------------\n')
+
+def generateUserPrivateKey():
+    userPrivKey = secrets.randbelow(ec_curve.field.n)
+    return userPrivKey
+
+def generateUserPublicKey():
+    userPubKey = userAPrivKey * ec_curve.g
+    return userPubKey
 
 def AES_GCM_encrypt(message, secretKey):
     aesCipher = AES.new(secretKey, AES.MODE_GCM)
@@ -33,6 +53,15 @@ def AES_GCM_decrypt(ciphertext, nonce, authTag, secretKey):
     plaintext = aesCipher.decrypt_and_verify(ciphertext, authTag)
     return plaintext
 
+""" def encrypt_privkey(private_key, secure_pass):
+    secure_private_key = base64.b64encode(AES.new(secure_pass, AES.MODE_GCM).encrypt(private_key))
+    print('Encrypt private key: ', secure_private_key)
+    return secure_private_key
+
+def decrypt_privkey(private_key, secure_pass):
+    original_private_key = base64.b64decode(AES.new(secure_pass, AES.MODE_GCM).encrypt(private_key))
+    print('Decrypt private key: ', original_private_key)
+    return original_private_key """
 
 def ecc_point_to_256_bitkey(point):
     sha = hashlib.sha256(int.to_bytes(point.x, 32, 'big'))
@@ -54,6 +83,9 @@ def ECC_decrypt(encryptedMessage, privKey):
     secretKey = ecc_point_to_256_bitkey(ECCSharedKey)
     plaintext = AES_GCM_decrypt(ciphertext, nonce, authTag, secretKey)
     return plaintext
+
+""" h = encrypt_privkey(str(userAPrivKey), 'hello')
+decrypt_privkey(str(h), 'hello') """
 
 
 message = b'hello, how are you doing?'

@@ -1,4 +1,5 @@
 import time
+from kivy.core.window import Window
 from kivy.uix.widget import Widget
 from kivy.uix.screenmanager import Screen
 
@@ -8,16 +9,22 @@ from .socket_ import sio
 from store import store
 from operator import itemgetter
 
+__self = None
+
 # Login screen class for GUI and logic function
 class LoginScreen(Screen, Widget, socketio.Namespace):
-    @sio.event(namespace='/login')
-    def message(self, data):
-        print(data)
-        self.user = data
-        
     def __init__(self, **kw):
         self.user = None
         super().__init__(**kw)
+    
+    def on_pre_enter(self, *args):
+        global __self
+        __self = self
+    
+    @sio.on('login')
+    def message(self, data):
+        print("Login socket request callback: ", data)
+        self.user = data
         
     # Login function that connects to the server and authenticate user
     def login(self):
@@ -27,8 +34,8 @@ class LoginScreen(Screen, Widget, socketio.Namespace):
         password = self.password.text
 
         if username and password is not None:
-            sio.emit('auth', {'username': username, 'password': password}, namespace='/login', callback=self.message)
-            time.sleep(0.3)
+            sio.emit('login', {'username': username, 'password': password}, callback=self.message)
+            time.sleep(0.05)
 
             if self.user is not None:
                 status = itemgetter('status')(self.user)
@@ -37,6 +44,7 @@ class LoginScreen(Screen, Widget, socketio.Namespace):
                     Alert('Authentication Error', 'Invalid Credentials')
                 else:
                     id, username = itemgetter('id', 'username')(self.user)
+                    Window.set_title('Welcome - ' + username)
                     print('Success message!', self.user)
                     # store.put(self, 'auth', {
                     #     'id': str(id),

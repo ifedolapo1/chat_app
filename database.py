@@ -9,7 +9,7 @@ cur = con.cursor()
 def runSqlDatabase():
     # Create users and chats table if it does not exists
     cur.execute(
-        "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, fullname, username, password)")
+        "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, fullname, username, password, session_id, private_key)")
     cur.execute(
         "CREATE TABLE IF NOT EXISTS chats (id INTEGER PRIMARY KEY, from_username, to_username, text,  enc_text, time)")
     con.commit() # Save database execution changes

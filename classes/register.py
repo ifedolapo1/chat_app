@@ -31,7 +31,7 @@ class RegisterScreen(Screen, Widget, socketio.Namespace):
                 'username': username, 
                 'password': password
                 }, namespace='/register', callback=self.message)
-            time.sleep(0.3)
+            time.sleep(0.05)
 
             if self.user is not None:
                 status = itemgetter('status')(self.user)
