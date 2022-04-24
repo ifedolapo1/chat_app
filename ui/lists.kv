@@ -6,6 +6,27 @@
     # lists: lists
     boxlayout: boxlayout
     
-    BoxLayout:
-        orientation: 'vertical'
-        id: boxlayout
+    GridLayout:
+        rows: 2
+
+        GridLayout:
+            cols: 1
+            size_hint_y: 0.12
+
+            Button:
+                size_hint_x: 0.4
+                size_hint_y: 0.12
+                text:'Logout'
+                on_release: root.logout()
+
+            ScrollView:
+                do_scroll_x: False
+                do_scroll_y: True
+                size: (400, 400)
+
+                GridLayout:
+                    cols: 1
+                    size_hint_y: None
+                    height: self.height
+                    spacing: 10
+                    id: boxlayout

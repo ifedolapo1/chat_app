@@ -11,6 +11,6 @@ def runSqlDatabase():
     cur.execute(
         "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, fullname, username, password, session_id, private_key)")
     cur.execute(
-        "CREATE TABLE IF NOT EXISTS chats (id INTEGER PRIMARY KEY, from_username, to_username, text,  enc_text, time)")
+        "CREATE TABLE IF NOT EXISTS chats (id INTEGER PRIMARY KEY, from_id, from_fullname, from_username, to_id, encrypted_message)")
     con.commit() # Save database execution changes
     # con.close() # Close database connection

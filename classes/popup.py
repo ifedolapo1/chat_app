@@ -1,4 +1,3 @@
-import time
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 

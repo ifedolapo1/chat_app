@@ -21,6 +21,7 @@ class LoginScreen(Screen, Widget, socketio.Namespace):
         global __self
         __self = self
     
+    # callback event that is fired when server returns request from emitted event
     @sio.on('login')
     def message(self, data):
         print("Login socket request callback: ", data)
@@ -34,7 +35,7 @@ class LoginScreen(Screen, Widget, socketio.Namespace):
         password = self.password.text
 
         if username and password is not None:
-            sio.emit('login', {'username': username, 'password': password}, callback=self.message)
+            sio.emit('login', {'username': username, 'password': password}, callback=self.message) # reference line 24
             time.sleep(0.05)
 
             if self.user is not None:
@@ -43,12 +44,14 @@ class LoginScreen(Screen, Widget, socketio.Namespace):
                     print('Error message!', self.user)
                     Alert('Authentication Error', 'Invalid Credentials')
                 else:
-                    id, username = itemgetter('id', 'username')(self.user)
-                    Window.set_title('Welcome - ' + username)
+                    fullname, username = itemgetter('fullname', 'username')(self.user)
+                    Window.set_title('Welcome - ' + fullname) # set window title to fullname
                     print('Success message!', self.user)
-                    # store.put(self, 'auth', {
-                    #     'id': str(id),
-                    #     'username': str(username)
-                    # })
-                    Alert('Authentication Success', 'You are now logged in')
+                    Alert('Authentication Success', 'You are now logged in \n as the username ' + username)
+
+                    # set textinput box to empty
+                    self.username.text = ''
+                    self.password.text = ''
+                    
+                    # switch screen to lists
                     self.manager.current = 'lists'

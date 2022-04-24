@@ -1,5 +1,4 @@
 # import websocket client
-from multiprocessing.connection import wait
 import socketio
 
 # initialize socket client

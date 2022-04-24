@@ -16,11 +16,8 @@ class RegisterScreen(Screen, Widget, socketio.Namespace):
         self.user = None
         super().__init__(**kw)
 
-    def on_pre_enter(self, *args):
-        print("yooks, works")
-        return super().on_pre_enter(*args)
-
     def register(self):
+        # get textinpute for fullname, username, password
         fullname = self.fullname.text
         username = self.username.text
         password = self.password.text
@@ -40,4 +37,11 @@ class RegisterScreen(Screen, Widget, socketio.Namespace):
                     Alert('Register Error', 'Something went wrong. Try again')
                 else:
                     Alert('Successful', 'User account created successfully')
+
+                    # set textinput to empty
+                    self.fullname.text = ''
+                    self.username.text = ''
+                    self.password.text = ''
+
+                    # switch screen to login screen
                     self.manager.current = 'login'
